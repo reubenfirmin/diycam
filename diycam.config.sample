@@ -1,0 +1,6 @@
+# name of bucket in backblaze to upload to
+bucket=backblazebucket
+# number of seconds of motion to trigger an event (this time will be included in the output video)
+sensitivity=3
+# directory that videos get written to
+monitor_dir=/videos
