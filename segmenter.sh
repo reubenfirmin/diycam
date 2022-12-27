@@ -15,8 +15,8 @@ segmenter() {
         		echo found $segment
 	     		if [ -n "$segment" ]; then
 				process_segment $segment
-				tail -n +2 ${monitor_dir}/$segmentfile > /tmp/$segmentfile
-				mv /tmp/$segmentfile ${monitor_dir}/$segmentfile
+				# remove the first line of the file; note that this needs to be done in place, because ffmpeg is writing to the existing file's inode
+				echo "$(tail -n +2 $monitor_dir/$segmentfile)" > $monitor_dir/$segmentfile
 			else 
 				break
         		fi
