@@ -2,5 +2,18 @@
 bucket=backblazebucket
 # number of seconds of motion to trigger an event (this time will be included in the output video)
 sensitivity=3
+# kernel sensitivity - how much movement is needed to trigger an event; higher means more movement needed. must be an odd number
+kernel=17
 # directory that videos get written to
 monitor_dir=/videos
+# directory to upload to backblaze from
+upload_dir=/videos/uploads
+# camera creds (this assumes that all of your cameras have the same username/password)
+camera_creds="admin:admin"
+
+declare -A cameras
+# a map of cameras to monitor (one line per camera, with a unique key/ip for each)
+cameras["1"]="192.168.1.1:554"
+
+
+
