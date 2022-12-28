@@ -13,7 +13,7 @@ keep_alive() {
 	fi
 
 	while true; do
-		ffmpeg $transport_option -i $camera_input -map 0 -c:v h264 -preset:v ultrafast -reset_timestamps 1 -f segment -segment_time $segment_length -strftime 1 $monitor_dir/cam${camera}_%Y%m%d_%H%M%S.mp4
+		ffmpeg $transport_option -i $camera_input -hide_banner -loglevel error -stats -map 0 -c:v h264 -preset:v ultrafast -reset_timestamps 1 -f segment -segment_time $segment_length -strftime 1 $monitor_dir/cam${camera}_%Y%m%d_%H%M%S.mp4
 	done
 }
 

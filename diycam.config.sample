@@ -8,6 +8,8 @@ kernel=17
 monitor_dir=/videos
 # directory to upload to backblaze from
 upload_dir=/videos/uploads
+# directory to store videos that couldn't be processed
+error_dir=/videos/errors
 # length of each segment video, in seconds
 segment_length=300
 # period of time between starting each stream, in seconds

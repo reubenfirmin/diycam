@@ -16,8 +16,13 @@ segmenter() {
 		fi	
 		# process each of the files we found
 		for file in ${files[@]}; do
+			# skip directories, e.g. stray events dirs
+			if [[ -d $file ]]; then
+				continue
+			fi
+
 			segment=`basename $file`
-        		echo found $segment
+        		#echo found $segment
 	     		if [ -n "$segment" ]; then
 				process_segment $segment || echo "Processing $segment failed"
 			else 
@@ -35,24 +40,33 @@ process_segment() {
 	segment=$1
 	segmentdir=${monitor_dir}/$segment-events
         mkdir $segmentdir
-	echo "env/bin/dvr-scan -i ${monitor_dir}/$segment -m copy -l ${sensitivity}s -k 17 -tb ${sensitivity}s -d $segmentdir -b CNT"
-        env/bin/dvr-scan -i ${monitor_dir}/$segment -m copy -l ${sensitivity}s -k 17 -tb ${sensitivity}s -d $segmentdir -b CNT || exit 1
-        # extract thumbnails
+	#echo "env/bin/dvr-scan -i ${monitor_dir}/$segment -m copy -l ${sensitivity}s -k 17 -tb ${sensitivity}s -d $segmentdir -b CNT"
+	echo Scanning $segment
+        env/bin/dvr-scan -i ${monitor_dir}/$segment -m copy -l ${sensitivity}s -k 17 -tb ${sensitivity}s -d $segmentdir -b CNT --quiet || error_file ${monitor_dir}/$segment || return 1
+        # for each event video, extract thumbnail and move to the uploads folder, where it'll be processed
         for file in `find $segmentdir -type f`; do
-        	echo processing $file
+        	#echo processing $file
                 filename=`basename $file`
                 thumbnailname=${filename}_thumbnail.jpg
 		thumbnailpath=$segmentdir/$thumbnailname
                 # XXX need better way of including sensitivity here
                 ffmpeg -hide_banner -loglevel error -i $file -ss 00:00:0$sensitivity -frames:v 1 $thumbnailpath || exit 1
+		echo Produced $file
 		mv $file $upload_dir
 		mv $thumbnailpath $upload_dir
        	done
 
-        mv $segmentdir/* $upload_dir
         rm -fr $segmentdir
         rm ${monitor_dir}/$segment
-        echo Processed $segment
+        echo Finished processing $segment
+}
+
+error_file() {
+	file=$1
+	mkdir -p $error_dir
+	echo error processing $file
+	mv $file $error_dir
+	return 1
 }
 
 # kick off a segmenter per camera
