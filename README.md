@@ -1,6 +1,6 @@
 # DIY Security Cam
 
-This is a project to tie together tools that allow a Linux machine to become a DIY security camera. You can use anything from a laptop camera to a USB webcam to an IP security camera as the source. 
+This is a project to tie together tools that allow a Linux machine to become a DIY security camera. You can use anything from a laptop camera to a USB webcam to an IP security camera as the source. It supports multiple cameras, and currently will upload sections of the video containing significant motion to a cloud storage location.
 
 # Structure
 
@@ -11,6 +11,18 @@ We use ffmpeg to record the video stream from the camera source(s). We tell ffmp
 We watch for new segments being dumped out, and then run dvr-scan, an open source Python package, which looks for motion in the video that we just captured. We can configure how many seconds of motion constitutes an event worth paying attention to; this will need to be tuned, as it will vary tremendously based on what your camera is pointed at. dvr-scan will dump out a separate video per sequence of motion in the segment video.
 
 Finally, we clean up the source segment video, and do something with the motion sequence videos that we just produced. Typically, we may want to upload the event cameras to the cloud (backblaze is implemented) for offsite backup; we may want to trigger notifications based on certain conditions (although if motion is expected, then probably not.)
+
+# To Run
+
+* Run setup.sh, and follow instructions
+
+* Enter parameters enter diycam.config - at minimum, directories to use, and locations of your camera(s)
+
+* Run ./streams.sh to start recording your camera streams
+
+* Run ./segmenter.sh to watch for segments to be produced and kick off processing
+
+* Run ./uploader.sh to upload motion events to backblaze
 
 # Needs
 
