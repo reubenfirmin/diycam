@@ -42,7 +42,7 @@ process_segment() {
         mkdir $segmentdir
 	#echo "env/bin/dvr-scan -i ${monitor_dir}/$segment -m copy -l ${sensitivity}s -k 17 -tb ${sensitivity}s -d $segmentdir -b CNT"
 	echo Scanning $segment
-        env/bin/dvr-scan -i ${monitor_dir}/$segment -m copy -l ${sensitivity}s -k 17 -tb ${sensitivity}s -d $segmentdir -b CNT --quiet || error_file ${monitor_dir}/$segment || return 1
+        env/bin/dvr-scan -i ${monitor_dir}/$segment -m ffmpeg -l ${sensitivity}s -k $kernel -tb ${sensitivity}s -d $segmentdir -b CNT --quiet || error_file ${monitor_dir}/$segment || return 1
         # for each event video, extract thumbnail and move to the uploads folder, where it'll be processed
         for file in `find $segmentdir -type f`; do
         	#echo processing $file
