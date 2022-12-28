@@ -9,18 +9,17 @@ segmenter() {
 	segmentfile=$1
 	echo watching $monitor_dir/$segmentfile
 	while true; do
-       		inotifywait ${monitor_dir}/$segmentfile -e modify	
-		while true; do
-        		segment=$( head -n 1 ${monitor_dir}/$segmentfile )
+		readarray -t segments < $monitor_dir/$segmentfile
+		echo > $monitor_dir/$segmentfile
+		for segment in ${segments[@]}; do
         		echo found $segment
 	     		if [ -n "$segment" ]; then
-				process_segment $segment
-				# remove the first line of the file; note that this needs to be done in place, because ffmpeg is writing to the existing file's inode
-				echo "$(tail -n +2 $monitor_dir/$segmentfile)" > $monitor_dir/$segmentfile
+				process_segment $segment || echo "Processing $segment failed"
 			else 
 				break
         		fi
 		done
+		sleep 90
 	done
 }
 

@@ -13,9 +13,9 @@ keep_alive() {
 
 # for each declared camera, record the video stream and write segments
 for camera in ${!cameras[@]}; do
-        camera_ip=${cameras[$camera]}
-        keep_alive camera &
+        keep_alive $camera &
 	# offset streams to offset processing
-	sleep 60
+	# TODO should be segment time divided by number of cameras 
+	sleep 90
 done
 
