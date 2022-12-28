@@ -14,7 +14,8 @@ error_dir=/videos/errors
 segment_length=300
 # period of time between starting each stream, in seconds
 stream_offset=90
-
+# number of frames to skip between each frame (for performance); greater than 2 is not advised
+skip_frames=0
 
 declare -A cameras
 # a map of cameras to monitor (one line per camera, with a unique key/ip for each)
