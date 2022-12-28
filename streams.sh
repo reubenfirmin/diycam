@@ -13,15 +13,13 @@ keep_alive() {
 	fi
 
 	while true; do
-		ffmpeg $transport_option -i $camera_input -map 0 -c:v h264 -preset:v ultrafast -reset_timestamps 1 -f segment -segment_time $segment_length -strftime 1 -segment_list ${monitor_dir}/segments$camera.txt $monitor_dir/cam${camera}_%Y%m%d_%H%M%S.mp4
+		ffmpeg $transport_option -i $camera_input -map 0 -c:v h264 -preset:v ultrafast -reset_timestamps 1 -f segment -segment_time $segment_length -strftime 1 $monitor_dir/cam${camera}_%Y%m%d_%H%M%S.mp4
 	done
 }
 
 # for each declared camera, record the video stream and write segments
 for camera in ${!cameras[@]}; do
         keep_alive $camera &
-	# offset streams to offset processing
-	# TODO should be segment time divided by number of cameras 
-	sleep 90
+	sleep $stream_offset 
 done
 

@@ -10,6 +10,8 @@ monitor_dir=/videos
 upload_dir=/videos/uploads
 # length of each segment video, in seconds
 segment_length=300
+# period of time between starting each stream, in seconds
+stream_offset=90
 
 
 declare -A cameras
