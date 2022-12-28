@@ -3,15 +3,20 @@
 . ./diycam.config
 mkdir -p $upload_dir
 
-# watch a segments file; on modification, process each line found in the file, removing the line once complete
-# XXX potential for race condition if ffmpeg writes at the same time that we remove the first line
+# monitor a directory for new files with a given pattern being written; we avoid touching the most recent file, since ffmpeg is likely writing to it
 segmenter() {
-	segmentfile=$1
-	echo watching $monitor_dir/$segmentfile
+	camera=$1
+	echo watching $monitor_dir/$camera
 	while true; do
-		readarray -t segments < $monitor_dir/$segmentfile
-		echo > $monitor_dir/$segmentfile
-		for segment in ${segments[@]}; do
+		# get all but the last file (which we presume ffmpeg to be processing)
+		files=($monitor_dir/cam${camera}_*)
+		numfiles=${#files[@]}
+		if (( $numfiles >= 1 )); then
+			unset files[-1]
+		fi	
+		# process each of the files we found
+		for file in ${files[@]}; do
+			segment=`basename $file`
         		echo found $segment
 	     		if [ -n "$segment" ]; then
 				process_segment $segment || echo "Processing $segment failed"
@@ -19,7 +24,8 @@ segmenter() {
 				break
         		fi
 		done
-		sleep 90
+		# pause and let another camera's output be processed
+		sleep 30
 	done
 }
 
@@ -52,5 +58,5 @@ process_segment() {
 # kick off a segmenter per camera
 for camera in ${!cameras[@]}; do
 	echo $camera
-	segmenter "segments$camera.txt" &
+	segmenter $camera &
 done

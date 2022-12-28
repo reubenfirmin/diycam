@@ -8,12 +8,16 @@ kernel=17
 monitor_dir=/videos
 # directory to upload to backblaze from
 upload_dir=/videos/uploads
-# camera creds (this assumes that all of your cameras have the same username/password)
-camera_creds="admin:admin"
+# length of each segment video, in seconds
+segment_length=300
+
 
 declare -A cameras
 # a map of cameras to monitor (one line per camera, with a unique key/ip for each)
-cameras["1"]="192.168.1.1:554"
+# example for an ip camera: rtsp://admin:admin@192.168.1.1:554/video/1
+# example for a usb camera: /dev/video1
+# test using: ffplay -i {url}
+cameras["1"]="rtsp://admin:admin@192.168.1.1:554/video/1"
 
 
 
